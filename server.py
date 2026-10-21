@@ -3,7 +3,7 @@ import uuid
 import hmac
 import hashlib
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from dotenv import load_dotenv
 
 # Load secret keys from .env file
@@ -13,6 +13,7 @@ app = Flask(__name__, template_folder="templates")
 
 DATAMART_API_KEY = os.getenv("DATAMART_API_KEY")
 PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
+DATAMART_WEBHOOK_SECRET = os.getenv("DATAMART_WEBHOOK_SECRET", "").encode()
 DATAMART_BASE_URL = "https://api.datamartgh.shop/api/store/v1"
 
 # 1. Serve index.html as the homepage
@@ -38,6 +39,17 @@ def get_packages():
     headers = {"Authorization": f"Bearer {DATAMART_API_KEY}"}
     try:
         res = requests.get(f"{DATAMART_BASE_URL}/products", headers=headers)
+        return jsonify(res.json()), res.status_code
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# 2.2 Get Store Wallet Balance (Deposit & Earnings)
+@app.route("/api/wallet/balance", methods=["GET"])
+def get_wallet_balance():
+    headers = {"Authorization": f"Bearer {DATAMART_API_KEY}"}
+    try:
+        res = requests.get(f"{DATAMART_BASE_URL}/wallet/balance", headers=headers)
         return jsonify(res.json()), res.status_code
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -79,7 +91,7 @@ def initialize_payment():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-# 4. Process Order after Paystack verification
+# 4. Process Order after Paystack verification (Strict Idempotency Applied)
 @app.route("/api/fulfill-order", methods=["POST"])
 def fulfill_order():
     data = request.json or {}
@@ -101,7 +113,7 @@ def fulfill_order():
     if not verify_data.get("status") or verify_data["data"]["status"] != "success":
         return jsonify({"status": "error", "message": "Payment verification failed"}), 400
 
-    # Step B: Trigger DataMart API to send data bundle
+    # Step B: Trigger DataMart API to send data bundle with mandatory X-Idempotency-Key[cite: 1]
     idempotency_key = str(uuid.uuid4())
     datamart_headers = {
         "Authorization": f"Bearer {DATAMART_API_KEY}",
@@ -154,6 +166,29 @@ def paystack_webhook():
     return "", 200
 
 
+# 6. DataMart Webhook Handler with HMAC-SHA256 Signature Verification
+@app.post('/api/datamart-webhook')
+def datamart_webhook():
+    sig = request.headers.get('X-Webhook-Signature', '')
+    
+    # If a secret is defined, verify the HMAC signature securely
+    if DATAMART_WEBHOOK_SECRET:
+        expected = hmac.new(DATAMART_WEBHOOK_SECRET, request.get_data(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(sig, expected):
+            abort(401)
+            
+    event = request.get_json(force=True)
+    
+    # Handle DataMart event types ("order.completed", "order.failed", etc.)[cite: 1]
+    event_type = event.get("event")
+    event_data = event.get("data", {})
+    
+    print(f"Received DataMart Event: {event_type} for Order Reference: {event_data.get('reference')}")
+    
+    # Respond within 8 seconds with 200 OK as required by DataMart documentation[cite: 1]
+    return '', 200
+
+
 if __name__ == "__main__":
     print("🚀 Server running on http://127.0.0.1:5000")
-    app.run(debug=True,host="0.0.0.0", port=5000)
+    app.run(debug=True, port=5000)
