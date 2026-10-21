@@ -10,9 +10,12 @@ load_dotenv()
 
 app = Flask(__name__, template_folder="templates")
 
+# Environment Variables
 DATAMART_API_KEY = os.getenv("DATAMART_API_KEY")
 PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
+PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY", "")
 DATAMART_WEBHOOK_SECRET = os.getenv("DATAMART_WEBHOOK_SECRET", "").encode()
+ADMIN_PASSCODE = os.getenv("ADMIN_PASSCODE", "netboss2026") # Set ADMIN_PASSCODE in Render env or use default
 DATAMART_BASE_URL = "https://api.datamartgh.shop/api/store/v1"
 
 # Store Configuration & Contact info
@@ -30,24 +33,32 @@ def get_datamart_headers(idempotency_key=None):
         headers["X-Idempotency-Key"] = idempotency_key
     return headers
 
+
+# --- FRONTEND ROUTES ---
+
 @app.route("/")
 def home():
-    return render_template("index.html", store=STORE_INFO)
+    return render_template("index.html", store=STORE_INFO, paystack_public_key=PAYSTACK_PUBLIC_KEY)
+
+@app.route("/admin")
+def admin_page():
+    return render_template("admin.html", store=STORE_INFO)
+
+
+# --- ADMIN AUTHENTICATION API ---
+
+@app.route("/api/admin/verify", methods=["POST"])
+def verify_admin():
+    data = request.json or {}
+    passcode = data.get("passcode")
+    if passcode == ADMIN_PASSCODE:
+        return jsonify({"status": "success", "message": "Authenticated"})
+    return jsonify({"status": "error", "message": "Invalid admin passcode"}), 401
 
 
 # --- DATAMART PROXY ENDPOINTS ---
 
-# 1. Get Store Profile
-@app.route("/api/store", methods=["GET"])
-def get_store_profile():
-    try:
-        res = requests.get(f"{DATAMART_BASE_URL}/store", headers=get_datamart_headers())
-        return jsonify(res.json()), res.status_code
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-
-# 2. Get Wallet Balance (Deposit & Earnings)
+# Get Wallet Balance
 @app.route("/api/wallet/balance", methods=["GET"])
 def get_wallet_balance():
     try:
@@ -56,8 +67,7 @@ def get_wallet_balance():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# 3. Get Wallet Transactions Ledger
+# Get Wallet Transactions
 @app.route("/api/wallet/transactions", methods=["GET"])
 def get_wallet_transactions():
     limit = request.args.get("limit", "20")
@@ -72,8 +82,7 @@ def get_wallet_transactions():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# 4. Get Products Catalog
+# Get Products Catalog
 @app.route("/api/products", methods=["GET"])
 def get_products():
     try:
@@ -82,12 +91,11 @@ def get_products():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# 5. Get Paginated Orders with Filters
+# Get Paginated Orders (For Admin & Search)
 @app.route("/api/orders", methods=["GET"])
 def get_orders():
     status = request.args.get("status", "")
-    limit = request.args.get("limit", "20")
+    limit = request.args.get("limit", "50")
     page = request.args.get("page", "1")
     url = f"{DATAMART_BASE_URL}/orders?page={page}&limit={limit}"
     if status:
@@ -98,8 +106,7 @@ def get_orders():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# 6. Get Single Order by Reference
+# Get Single Order by Reference
 @app.route("/api/orders/<reference>", methods=["GET"])
 def get_single_order(reference):
     try:
@@ -109,21 +116,7 @@ def get_single_order(reference):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-# 7. Get Customers List
-@app.route("/api/customers", methods=["GET"])
-def get_customers():
-    q = request.args.get("q", "")
-    url = f"{DATAMART_BASE_URL}/customers"
-    if q:
-        url += f"?q={q}"
-    try:
-        res = requests.get(url, headers=get_datamart_headers())
-        return jsonify(res.json()), res.status_code
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-
-# --- CHECKOUT & FULFILLMENT ---
+# --- PAYMENT CHECKOUT & FULFILLMENT ---
 
 @app.route("/api/initialize-payment", methods=["POST"])
 def initialize_payment():

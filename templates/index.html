@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetBoss Data - Automated Bundles Hub</title>
+    <title>NetBoss Data - Automated Bundles Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
@@ -16,13 +16,36 @@
                 <div class="bg-emerald-500 text-black font-black p-2 rounded-xl text-sm">⚡ NB</div>
                 <span class="font-bold text-lg tracking-wide text-white">NetBoss Data</span>
             </div>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium">
-                <button onclick="switchTab('home')" class="nav-link text-emerald-400 hover:text-emerald-300 transition">Home</button>
-                <button onclick="switchTab('buy')" class="nav-link text-gray-300 hover:text-white transition">Buy Data</button>
-                <button onclick="switchTab('orders')" class="nav-link text-gray-300 hover:text-white transition">Track Order</button>
-                <button onclick="switchTab('wallet')" class="nav-link text-gray-300 hover:text-white transition">Store Balance</button>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <button onclick="switchTab('home')" class="text-gray-300 hover:text-white transition">Home</button>
+                
+                <!-- BUY DATA DROPDOWN -->
+                <div class="relative group">
+                    <button class="flex items-center space-x-1 text-emerald-400 hover:text-emerald-300 transition py-2 font-semibold">
+                        <span>Buy Data & Services</span>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    </button>
+                    <div class="absolute left-0 mt-0 w-48 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl py-2 hidden group-hover:block transition-all z-50">
+                        <button onclick="selectNetworkAndBuy('YELLO')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-emerald-400 flex items-center justify-between">
+                            <span>MTN Ghana</span>
+                            <span class="bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 text-[10px] rounded">Yellow</span>
+                        </button>
+                        <button onclick="selectNetworkAndBuy('TELECEL')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-red-400 flex items-center justify-between">
+                            <span>Telecel Ghana</span>
+                            <span class="bg-red-500/20 text-red-400 px-1.5 py-0.5 text-[10px] rounded">Telecel</span>
+                        </button>
+                        <button onclick="selectNetworkAndBuy('AT_PREMIUM')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-blue-400 flex items-center justify-between">
+                            <span>AirtelTigo (AT)</span>
+                            <span class="bg-blue-500/20 text-blue-400 px-1.5 py-0.5 text-[10px] rounded">AT</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button onclick="switchTab('orders')" class="text-gray-300 hover:text-white transition">Track Order</button>
             </nav>
-            <div class="flex items-center space-x-2">
+
+            <div class="flex items-center space-x-3">
                 <a href="{{ store.whatsappChannel }}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow">WhatsApp</a>
                 <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition shadow">Buy Data</button>
             </div>
@@ -32,25 +55,16 @@
     <!-- Main Content Container -->
     <main class="flex-grow">
 
-        <!-- TAB: HOME / LANDING -->
+        <!-- TAB 1: HOME -->
         <section id="sec-home" class="tab-section max-w-6xl mx-auto px-4 py-12 space-y-16">
-            <!-- Hero Banner -->
             <div class="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="space-y-4 max-w-xl">
                     <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1 rounded-full font-semibold">Premium Data Bundles</span>
                     <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">Data, delivered beautifully 📶</h1>
-                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">MTN and Telecel bundles at the best live prices. Pay securely via Paystack, track every order instantly, and stay connected.</p>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">MTN, Telecel, and AirtelTigo data bundles delivered instantly to any phone number in Ghana.</p>
                     <div class="flex space-x-3 pt-2">
                         <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg text-sm">Buy Data Now</button>
                         <button onclick="switchTab('orders')" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold px-6 py-3 rounded-xl transition border border-gray-700 text-sm">Track Order</button>
-                    </div>
-                </div>
-                <div class="bg-gray-950 border border-gray-800/80 p-6 rounded-2xl w-full md:w-80 shadow-xl space-y-4">
-                    <h3 class="font-bold text-sm text-emerald-400 uppercase tracking-wider">Live Network Status</h3>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>MTN (Yello)</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
-                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>Telecel</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
-                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>AirtelTigo</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
                     </div>
                 </div>
             </div>
@@ -59,25 +73,25 @@
             <div class="space-y-8">
                 <h2 class="text-2xl font-bold text-center text-white">How it works</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">01</span><h3 class="font-bold text-white">Pick a bundle</h3><p class="text-xs text-gray-400">Choose from MTN, Telecel, or AT packages.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">02</span><h3 class="font-bold text-white">Enter number</h3><p class="text-xs text-gray-400">Provide any recipient phone number.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">03</span><h3 class="font-bold text-white">Secure payment</h3><p class="text-xs text-gray-400">Pay easily via MoMo or card on Paystack.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">04</span><h3 class="font-bold text-white">Instant delivery</h3><p class="text-xs text-gray-400">Data is delivered straight to the phone.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">01</span><h3 class="font-bold text-white">Pick a bundle</h3><p class="text-xs text-gray-400">Select MTN, Telecel, or AirtelTigo.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">02</span><h3 class="font-bold text-white">Enter number</h3><p class="text-xs text-gray-400">Provide the recipient phone number.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">03</span><h3 class="font-bold text-white">Pay with MoMo</h3><p class="text-xs text-gray-400">Pay securely via Paystack.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">04</span><h3 class="font-bold text-white">Instant delivery</h3><p class="text-xs text-gray-400">Data arrives on the recipient's phone.</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB: BUY DATA -->
+        <!-- TAB 2: BUY DATA -->
         <section id="sec-buy" class="tab-section hidden max-w-xl mx-auto px-4 py-12">
             <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
                 <div>
                     <h2 class="text-2xl font-black text-white">Purchase Data Bundle</h2>
-                    <p class="text-xs text-gray-400 mt-1">Select your preferred network and live-priced bundle package.</p>
+                    <p class="text-xs text-gray-400 mt-1">Select network provider and live bundle package.</p>
                 </div>
                 <form id="paymentForm" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Recipient Phone Number</label>
-                        <input type="text" id="phoneNumber" placeholder="0241234567" required
+                        <input type="text" id="phoneNumber" placeholder="e.g. 0241234567" required
                                class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
                     </div>
                     <div>
@@ -89,9 +103,9 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Data Capacity & Live Price</label>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Data Capacity & Price</label>
                         <select id="capacity" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
-                            <option value="" disabled selected>Loading live packages...</option>
+                            <option value="" disabled selected>Loading live catalog...</option>
                         </select>
                     </div>
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm tracking-wide mt-2">
@@ -101,15 +115,15 @@
             </div>
         </section>
 
-        <!-- TAB: TRACK ORDER -->
+        <!-- TAB 3: TRACK ORDER -->
         <section id="sec-orders" class="tab-section hidden max-w-2xl mx-auto px-4 py-12">
             <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
                 <div>
-                    <h2 class="text-2xl font-black text-white">Track Order Status</h2>
-                    <p class="text-xs text-gray-400 mt-1">Enter your transaction reference to check delivery status.</p>
+                    <h2 class="text-2xl font-black text-white">Track Order Delivery</h2>
+                    <p class="text-xs text-gray-400 mt-1">Enter your reference code to view delivery status.</p>
                 </div>
                 <div class="flex space-x-2">
-                    <input type="text" id="orderRef" placeholder="e.g. API-LX5GZ4-A1B2C3D4"
+                    <input type="text" id="orderRef" placeholder="Enter Reference Code"
                            class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none">
                     <button onclick="checkOrderStatus()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3.5 rounded-xl text-sm font-bold transition shadow whitespace-nowrap">Track</button>
                 </div>
@@ -117,35 +131,12 @@
             </div>
         </section>
 
-        <!-- TAB: WALLET & BALANCE -->
-        <section id="sec-wallet" class="tab-section hidden max-w-2xl mx-auto px-4 py-12">
-            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-black text-white">Store Wallet Pools</h2>
-                        <p class="text-xs text-gray-400 mt-1">Monitor your Datamart deposit and earnings balances.</p>
-                    </div>
-                    <button onclick="fetchWalletBalance()" class="bg-gray-800 hover:bg-gray-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-gray-700">Refresh</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-2xl">
-                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Deposit Balance</p>
-                        <h3 id="depositBalance" class="text-2xl font-black text-emerald-400 mt-2">Loading...</h3>
-                    </div>
-                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-2xl">
-                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Available Earnings</p>
-                        <h3 id="earningsBalance" class="text-2xl font-black text-blue-400 mt-2">Loading...</h3>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-900 border-t border-gray-800 text-center py-6 text-xs text-gray-400 space-y-2">
-        <p>&copy; 2026 NetBoss Data. Fast delivery and reliable service.</p>
-        <p>Support Email: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a> | <a href="{{ store.whatsappChannel }}" target="_blank" class="text-emerald-400 underline">WhatsApp Channel</a></p>
+        <p>&copy; 2026 NetBoss Data. All Rights Reserved.</p>
+        <p>Support: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a> | <a href="{{ store.whatsappChannel }}" target="_blank" class="text-emerald-400 underline">WhatsApp Channel</a></p>
     </footer>
 
     <script>
@@ -155,7 +146,12 @@
             document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`sec-${tabId}`).classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            if (tabId === 'wallet') fetchWalletBalance();
+        }
+
+        function selectNetworkAndBuy(networkCode) {
+            switchTab('buy');
+            document.getElementById('network').value = networkCode;
+            updateCapacities();
         }
 
         async function fetchProducts() {
@@ -167,7 +163,7 @@
                     updateCapacities();
                 }
             } catch (err) {
-                console.error("Catalog load error:", err);
+                console.error("Catalog fetch failed:", err);
             }
         }
 
@@ -178,7 +174,7 @@
 
             const filtered = liveProducts.filter(p => p.network === network);
             if (filtered.length === 0) {
-                capacitySelect.innerHTML = '<option value="" disabled>No packages found for this network</option>';
+                capacitySelect.innerHTML = '<option value="" disabled>No packages available for this network</option>';
                 return;
             }
 
@@ -189,19 +185,6 @@
                 opt.textContent = `${p.capacity} GB - GH₵ ${p.price.toFixed(2)}`;
                 capacitySelect.appendChild(opt);
             });
-        }
-
-        async function fetchWalletBalance() {
-            try {
-                const res = await fetch('/api/wallet/balance');
-                const data = await res.json();
-                if (data.status === 'success') {
-                    document.getElementById('depositBalance').innerText = `${data.data.deposit.currency} ${data.data.deposit.balance.toFixed(2)}`;
-                    document.getElementById('earningsBalance').innerText = `${data.data.earnings.currency} ${data.data.earnings.availableBalance.toFixed(2)}`;
-                }
-            } catch (err) {
-                console.error(err);
-            }
         }
 
         async function checkOrderStatus() {
@@ -244,7 +227,7 @@
                         amount: amountInPesewas,
                         ref: initData.data.reference,
                         callback: async function(response) {
-                            alert("Payment successful! Processing data bundle delivery...");
+                            alert("Payment successful! Fulfilling data bundle order...");
                             const fulfillRes = await fetch('/api/fulfill-order', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -252,9 +235,9 @@
                             });
                             const fulfillData = await fulfillRes.json();
                             if (fulfillData.status === 'success') {
-                                alert("Data bundle order successfully placed!");
+                                alert("Data bundle order successfully delivered!");
                             } else {
-                                alert("Order error: " + (fulfillData.message || "Check backend logs"));
+                                alert("Order error: " + (fulfillData.message || "Check status in Track Order tab"));
                             }
                         },
                         onClose: function() {
@@ -263,7 +246,7 @@
                     });
                     handler.openIzu();
                 } else {
-                    alert("Initialization failed: " + (initData.message || "Unknown error"));
+                    alert("Initialization error: " + (initData.message || "Unable to process payment"));
                 }
             } catch (err) {
                 alert("Network error: " + err.message);

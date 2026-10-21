@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetBoss Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginModal" class="fixed inset-0 bg-gray-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl max-w-sm w-full space-y-4 shadow-2xl text-center">
+            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
+            <h2 class="text-xl font-black text-white">NetBoss Admin Access</h2>
+            <p class="text-xs text-gray-400">Enter your secure passcode to view store balances and orders.</p>
+            <input type="password" id="passcodeInput" placeholder="Passcode (default: netboss2026)" 
+                   class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-center text-white outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+            <button onclick="loginAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition text-sm shadow">Login</button>
+            <p id="loginError" class="text-xs text-red-400 hidden">Invalid passcode!</p>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN DASHBOARD -->
+    <div id="adminContent" class="hidden min-h-screen flex flex-col">
+        <header class="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
+            <h1 class="font-bold text-lg text-emerald-400 flex items-center gap-2">🛡️ NetBoss Admin Hub</h1>
+            <button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-300 transition">Logout</button>
+        </header>
+
+        <main class="max-w-6xl mx-auto p-6 w-full space-y-8 flex-grow">
+            <!-- WALLET OVERVIEW -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-900 border border-gray-800 p-6 rounded-3xl space-y-2">
+                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Datamart Deposit Pool</p>
+                    <h2 id="admDeposit" class="text-3xl font-black text-emerald-400">GH₵ 0.00</h2>
+                    <p class="text-[11px] text-gray-500">Spendable balance for automated fulfillment.</p>
+                </div>
+                <div class="bg-gray-900 border border-gray-800 p-6 rounded-3xl space-y-2">
+                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Available Store Earnings</p>
+                    <h2 id="admEarnings" class="text-3xl font-black text-blue-400">GH₵ 0.00</h2>
+                    <p class="text-[11px] text-gray-500">Net store profits ready for withdrawal.</p>
+                </div>
+            </div>
+
+            <!-- ORDERS LIST -->
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-white text-base">Recent DataMart Store Orders</h3>
+                    <button onclick="loadAdminData()" class="bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold transition">Refresh</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400 uppercase tracking-wider">
+                                <th class="py-3 px-2">Reference</th>
+                                <th class="py-3 px-2">Phone Number</th>
+                                <th class="py-3 px-2">Network</th>
+                                <th class="py-3 px-2">Capacity</th>
+                                <th class="py-3 px-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable" class="divide-y divide-gray-800/50 text-gray-300 font-mono">
+                            <tr><td colspan="5" class="py-4 text-center text-gray-500">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function loginAdmin() {
+            const passcode = document.getElementById('passcodeInput').value;
+            const res = await fetch('/api/admin/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ passcode })
+            });
+            if (res.ok) {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('adminContent').classList.remove('hidden');
+                loadAdminData();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        async function loadAdminData() {
+            // Fetch Balance
+            try {
+                const balRes = await fetch('/api/wallet/balance');
+                const balData = await balRes.json();
+                if (balData.status === 'success') {
+                    document.getElementById('admDeposit').innerText = `GH₵ ${balData.data.deposit.balance.toFixed(2)}`;
+                    document.getElementById('admEarnings').innerText = `GH₵ ${balData.data.earnings.availableBalance.toFixed(2)}`;
+                }
+            } catch (err) { console.error(err); }
+
+            // Fetch Orders
+            try {
+                const ordRes = await fetch('/api/orders?limit=25');
+                const ordData = await ordRes.json();
+                const tbody = document.getElementById('ordersTable');
+                if (ordData.status === 'success' && ordData.data.orders) {
+                    if (ordData.data.orders.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">No orders found.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = ordData.data.orders.map(o => `
+                        <tr>
+                            <td class="py-3 px-2 text-white font-bold">${o.reference}</td>
+                            <td class="py-3 px-2">${o.phoneNumber}</td>
+                            <td class="py-3 px-2">${o.network}</td>
+                            <td class="py-3 px-2">${o.capacity} GB</td>
+                            <td class="py-3 px-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-sans font-bold ${o.status === 'COMPLETED' ? 'bg-emerald-950 text-emerald-400' : 'bg-yellow-950 text-yellow-400'}">${o.status}</span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) { console.error(err); }
+        }
+    </script>
+</body>
+</html>
