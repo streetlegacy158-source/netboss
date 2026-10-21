@@ -3,93 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netboss - Automated Data Bundles</title>
+    <title>NetBoss Data - Automated Bundles Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between">
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col justify-between font-sans">
 
     <!-- Header / Navbar -->
-    <header class="bg-gray-800 border-b border-gray-700 p-4 shadow-md">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-emerald-400">⚡ Netboss Hub</h1>
-            <div class="flex items-center space-x-4 text-sm">
-                <a href="{{ store.whatsappChannel }}" target="_blank" class="bg-green-600 hover:bg-green-500 px-3 py-1.5 rounded-lg font-medium transition">Join WhatsApp Channel</a>
-                <a href="mailto:{{ store.email }}" class="text-gray-300 hover:text-white transition">Support</a>
+    <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('home')">
+                <div class="bg-emerald-500 text-black font-black p-2 rounded-xl text-sm">⚡ NB</div>
+                <span class="font-bold text-lg tracking-wide text-white">NetBoss Data</span>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                <button onclick="switchTab('home')" class="nav-link text-emerald-400 hover:text-emerald-300 transition">Home</button>
+                <button onclick="switchTab('buy')" class="nav-link text-gray-300 hover:text-white transition">Buy Data</button>
+                <button onclick="switchTab('orders')" class="nav-link text-gray-300 hover:text-white transition">Track Order</button>
+                <button onclick="switchTab('wallet')" class="nav-link text-gray-300 hover:text-white transition">Store Balance</button>
+            </nav>
+            <div class="flex items-center space-x-2">
+                <a href="{{ store.whatsappChannel }}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow">WhatsApp</a>
+                <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition shadow">Buy Data</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto p-4 w-full flex-grow grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-        
-        <!-- Order Form Card -->
-        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
-            <h2 class="text-lg font-semibold mb-4 text-emerald-300">Buy Data Bundle</h2>
-            <form id="paymentForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Phone Number (Ghana)</label>
-                    <input type="text" id="phoneNumber" placeholder="0241234567" required
-                           class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Network</label>
-                    <select id="network" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <option value="YELLO">MTN (YELLO)</option>
-                        <option value="TELECEL">Telecel</option>
-                        <option value="AT_PREMIUM">AirtelTigo (AT)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Capacity & Price</label>
-                    <select id="capacity" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <option value="1" data-price="5">1 GB - GH₵ 5.00</option>
-                        <option value="2" data-price="10">2 GB - GH₵ 10.00</option>
-                        <option value="5" data-price="24.5">5 GB - GH₵ 24.50</option>
-                        <option value="10" data-price="48">10 GB - GH₵ 48.00</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-lg transition shadow-lg">
-                    Pay & Deliver Instantly
-                </button>
-            </form>
-        </div>
+    <!-- Main Content Container -->
+    <main class="flex-grow">
 
-        <!-- Dashboard / Tracker Card -->
-        <div class="space-y-6">
-            <!-- Wallet Balance Card -->
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-lg font-semibold text-emerald-300">Wallet & Store Status</h2>
-                    <button onclick="fetchWalletBalance()" class="text-xs bg-gray-700 hover:bg-gray-600 px-2.5 py-1 rounded transition">Refresh</button>
+        <!-- TAB: HOME / LANDING -->
+        <section id="sec-home" class="tab-section max-w-6xl mx-auto px-4 py-12 space-y-16">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="space-y-4 max-w-xl">
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1 rounded-full font-semibold">Premium Data Bundles</span>
+                    <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">Data, delivered beautifully 📶</h1>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">MTN and Telecel bundles at the best live prices. Pay securely via Paystack, track every order instantly, and stay connected.</p>
+                    <div class="flex space-x-3 pt-2">
+                        <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg text-sm">Buy Data Now</button>
+                        <button onclick="switchTab('orders')" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold px-6 py-3 rounded-xl transition border border-gray-700 text-sm">Track Order</button>
+                    </div>
                 </div>
-                <div id="walletDisplay" class="text-sm space-y-2 text-gray-300">
-                    <p>Deposit Balance: <span id="depositBalance" class="font-bold text-white">Loading...</span></p>
-                    <p>Earnings Balance: <span id="earningsBalance" class="font-bold text-white">Loading...</span></p>
+                <div class="bg-gray-950 border border-gray-800/80 p-6 rounded-2xl w-full md:w-80 shadow-xl space-y-4">
+                    <h3 class="font-bold text-sm text-emerald-400 uppercase tracking-wider">Live Network Status</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>MTN (Yello)</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
+                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>Telecel</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
+                        <div class="flex justify-between items-center bg-gray-900 p-3 rounded-xl"><span>AirtelTigo</span><span class="text-emerald-400 font-semibold text-xs bg-emerald-950 px-2 py-0.5 rounded">Active</span></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Order Lookup Card -->
-            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-lg">
-                <h2 class="text-lg font-semibold mb-3 text-emerald-300">Track Order Status</h2>
-                <div class="flex space-x-2 mb-3">
-                    <input type="text" id="orderRef" placeholder="Enter Reference (e.g. API-...)"
-                           class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                    <button onclick="checkOrderStatus()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold transition">Track</button>
+            <!-- How It Works -->
+            <div class="space-y-8">
+                <h2 class="text-2xl font-bold text-center text-white">How it works</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">01</span><h3 class="font-bold text-white">Pick a bundle</h3><p class="text-xs text-gray-400">Choose from MTN, Telecel, or AT packages.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">02</span><h3 class="font-bold text-white">Enter number</h3><p class="text-xs text-gray-400">Provide any recipient phone number.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">03</span><h3 class="font-bold text-white">Secure payment</h3><p class="text-xs text-gray-400">Pay easily via MoMo or card on Paystack.</p></div>
+                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">04</span><h3 class="font-bold text-white">Instant delivery</h3><p class="text-xs text-gray-400">Data is delivered straight to the phone.</p></div>
                 </div>
-                <div id="orderResult" class="text-xs bg-gray-900 p-3 rounded-lg border border-gray-800 text-gray-400 font-mono hidden"></div>
             </div>
-        </div>
+        </section>
+
+        <!-- TAB: BUY DATA -->
+        <section id="sec-buy" class="tab-section hidden max-w-xl mx-auto px-4 py-12">
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Purchase Data Bundle</h2>
+                    <p class="text-xs text-gray-400 mt-1">Select your preferred network and live-priced bundle package.</p>
+                </div>
+                <form id="paymentForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Recipient Phone Number</label>
+                        <input type="text" id="phoneNumber" placeholder="0241234567" required
+                               class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Network Provider</label>
+                        <select id="network" onchange="updateCapacities()" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
+                            <option value="YELLO">MTN (YELLO)</option>
+                            <option value="TELECEL">Telecel</option>
+                            <option value="AT_PREMIUM">AirtelTigo (AT)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Data Capacity & Live Price</label>
+                        <select id="capacity" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
+                            <option value="" disabled selected>Loading live packages...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm tracking-wide mt-2">
+                        Pay & Deliver Instantly
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB: TRACK ORDER -->
+        <section id="sec-orders" class="tab-section hidden max-w-2xl mx-auto px-4 py-12">
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Track Order Status</h2>
+                    <p class="text-xs text-gray-400 mt-1">Enter your transaction reference to check delivery status.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" id="orderRef" placeholder="e.g. API-LX5GZ4-A1B2C3D4"
+                           class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <button onclick="checkOrderStatus()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3.5 rounded-xl text-sm font-bold transition shadow whitespace-nowrap">Track</button>
+                </div>
+                <div id="orderResult" class="text-xs bg-gray-950 p-4 rounded-2xl border border-gray-800 text-gray-300 font-mono hidden whitespace-pre-wrap"></div>
+            </div>
+        </section>
+
+        <!-- TAB: WALLET & BALANCE -->
+        <section id="sec-wallet" class="tab-section hidden max-w-2xl mx-auto px-4 py-12">
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">Store Wallet Pools</h2>
+                        <p class="text-xs text-gray-400 mt-1">Monitor your Datamart deposit and earnings balances.</p>
+                    </div>
+                    <button onclick="fetchWalletBalance()" class="bg-gray-800 hover:bg-gray-700 px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-gray-700">Refresh</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-2xl">
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Deposit Balance</p>
+                        <h3 id="depositBalance" class="text-2xl font-black text-emerald-400 mt-2">Loading...</h3>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-2xl">
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Available Earnings</p>
+                        <h3 id="earningsBalance" class="text-2xl font-black text-blue-400 mt-2">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 border-t border-gray-700 text-center py-4 text-xs text-gray-400">
-        <p>&copy; 2026 Netboss Hub. Contact Support: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a></p>
+    <footer class="bg-gray-900 border-t border-gray-800 text-center py-6 text-xs text-gray-400 space-y-2">
+        <p>&copy; 2026 NetBoss Data. Fast delivery and reliable service.</p>
+        <p>Support Email: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a> | <a href="{{ store.whatsappChannel }}" target="_blank" class="text-emerald-400 underline">WhatsApp Channel</a></p>
     </footer>
 
     <script>
-        // Fetch wallet balance on load
+        let liveProducts = [];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (tabId === 'wallet') fetchWalletBalance();
+        }
+
+        async function fetchProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                if (data.status === 'success' && data.data) {
+                    liveProducts = data.data;
+                    updateCapacities();
+                }
+            } catch (err) {
+                console.error("Catalog load error:", err);
+            }
+        }
+
+        function updateCapacities() {
+            const network = document.getElementById('network').value;
+            const capacitySelect = document.getElementById('capacity');
+            capacitySelect.innerHTML = '';
+
+            const filtered = liveProducts.filter(p => p.network === network);
+            if (filtered.length === 0) {
+                capacitySelect.innerHTML = '<option value="" disabled>No packages found for this network</option>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.capacity;
+                opt.setAttribute('data-price', p.price);
+                opt.textContent = `${p.capacity} GB - GH₵ ${p.price.toFixed(2)}`;
+                capacitySelect.appendChild(opt);
+            });
+        }
+
         async function fetchWalletBalance() {
             try {
                 const res = await fetch('/api/wallet/balance');
@@ -102,15 +203,13 @@
                 console.error(err);
             }
         }
-        fetchWalletBalance();
 
-        // Check order status by reference
         async function checkOrderStatus() {
             const ref = document.getElementById('orderRef').value.trim();
             const resultBox = document.getElementById('orderResult');
             if (!ref) return;
             resultBox.classList.remove('hidden');
-            resultBox.innerText = "Checking...";
+            resultBox.innerText = "Checking order status...";
             try {
                 const res = await fetch(`/api/orders/${ref}`);
                 const data = await res.json();
@@ -120,14 +219,14 @@
             }
         }
 
-        // Payment Checkout Handler
         document.getElementById("paymentForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             const phoneNumber = document.getElementById("phoneNumber").value;
             const network = document.getElementById("network").value;
             const capacitySelect = document.getElementById("capacity");
             const capacity = capacitySelect.value;
-            const amountInGHS = parseFloat(capacitySelect.options[capacitySelect.selectedIndex].getAttribute("data-price"));
+            const selectedOption = capacitySelect.options[capacitySelect.selectedIndex];
+            const amountInGHS = parseFloat(selectedOption.getAttribute("data-price"));
             const amountInPesewas = Math.round(amountInGHS * 100);
 
             try {
@@ -145,7 +244,7 @@
                         amount: amountInPesewas,
                         ref: initData.data.reference,
                         callback: async function(response) {
-                            alert("Payment successful! Fulfilling data bundle...");
+                            alert("Payment successful! Processing data bundle delivery...");
                             const fulfillRes = await fetch('/api/fulfill-order', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -153,7 +252,7 @@
                             });
                             const fulfillData = await fulfillRes.json();
                             if (fulfillData.status === 'success') {
-                                alert("Data bundle order placed successfully!");
+                                alert("Data bundle order successfully placed!");
                             } else {
                                 alert("Order error: " + (fulfillData.message || "Check backend logs"));
                             }
@@ -164,12 +263,14 @@
                     });
                     handler.openIzu();
                 } else {
-                    alert("Initialization failed: " + initData.message);
+                    alert("Initialization failed: " + (initData.message || "Unknown error"));
                 }
             } catch (err) {
                 alert("Network error: " + err.message);
             }
         });
+
+        fetchProducts();
     </script>
 </body>
 </html>
