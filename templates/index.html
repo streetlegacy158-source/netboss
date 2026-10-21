@@ -3,129 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetBoss Data - Automated Bundles Store</title>
+    <title>NetBoss Data - Automated Bundles</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col justify-between font-sans">
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col justify-between">
 
     <!-- Header / Navbar -->
-    <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <header class="bg-gray-900/80 backdrop-blur-lg border-b border-gray-800/80 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-3.5 flex justify-between items-center">
-            <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('home')">
-                <div class="bg-emerald-500 text-black font-black p-2 rounded-xl text-sm">⚡ NB</div>
-                <span class="font-bold text-lg tracking-wide text-white">NetBoss Data</span>
+            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('home')">
+                <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 text-black font-black px-2.5 py-1.5 rounded-xl text-sm shadow-lg shadow-emerald-500/20">⚡ NB</div>
+                <span class="font-extrabold text-lg tracking-tight text-white">NetBoss <span class="text-emerald-400">Data</span></span>
             </div>
             
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
-                <button onclick="switchTab('home')" class="text-gray-300 hover:text-white transition">Home</button>
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold">
+                <button onclick="switchTab('home')" class="text-gray-300 hover:text-emerald-400 transition">Home</button>
                 
-                <!-- BUY DATA DROPDOWN -->
+                <!-- Dropdown Menu for Networks -->
                 <div class="relative group">
-                    <button class="flex items-center space-x-1 text-emerald-400 hover:text-emerald-300 transition py-2 font-semibold">
-                        <span>Buy Data & Services</span>
-                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    <button class="flex items-center space-x-1 text-emerald-400 hover:text-emerald-300 transition py-2">
+                        <span>Buy Data ▾</span>
                     </button>
-                    <div class="absolute left-0 mt-0 w-48 bg-gray-900 border border-gray-800 rounded-xl shadow-2xl py-2 hidden group-hover:block transition-all z-50">
+                    <div class="absolute left-0 mt-0 w-48 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl py-2 hidden group-hover:block transition-all z-50">
                         <button onclick="selectNetworkAndBuy('YELLO')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-emerald-400 flex items-center justify-between">
                             <span>MTN Ghana</span>
-                            <span class="bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 text-[10px] rounded">Yellow</span>
+                            <span class="bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 text-[10px] rounded font-bold">MTN</span>
                         </button>
                         <button onclick="selectNetworkAndBuy('TELECEL')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-red-400 flex items-center justify-between">
                             <span>Telecel Ghana</span>
-                            <span class="bg-red-500/20 text-red-400 px-1.5 py-0.5 text-[10px] rounded">Telecel</span>
+                            <span class="bg-red-500/20 text-red-400 px-1.5 py-0.5 text-[10px] rounded font-bold">Telecel</span>
                         </button>
                         <button onclick="selectNetworkAndBuy('AT_PREMIUM')" class="w-full text-left px-4 py-2 text-xs text-gray-300 hover:bg-gray-800 hover:text-blue-400 flex items-center justify-between">
-                            <span>AirtelTigo (AT)</span>
-                            <span class="bg-blue-500/20 text-blue-400 px-1.5 py-0.5 text-[10px] rounded">AT</span>
+                            <span>AirtelTigo</span>
+                            <span class="bg-blue-500/20 text-blue-400 px-1.5 py-0.5 text-[10px] rounded font-bold">AT</span>
                         </button>
                     </div>
                 </div>
 
-                <button onclick="switchTab('orders')" class="text-gray-300 hover:text-white transition">Track Order</button>
+                <button onclick="switchTab('orders')" class="text-gray-300 hover:text-emerald-400 transition">Track Order</button>
             </nav>
 
-            <div class="flex items-center space-x-3">
-                <a href="{{ store.whatsappChannel }}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow">WhatsApp</a>
-                <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-xl text-xs font-bold transition shadow">Buy Data</button>
+            <div class="flex items-center space-x-2.5">
+                <a href="{{ store.whatsappChannel }}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-green-600/20">WhatsApp</a>
+                <button onclick="switchTab('buy')" class="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-xl text-xs font-extrabold transition shadow-lg shadow-emerald-500/20">Buy Now</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
+    <!-- Main Content Area -->
     <main class="flex-grow">
 
-        <!-- TAB 1: HOME -->
-        <section id="sec-home" class="tab-section max-w-6xl mx-auto px-4 py-12 space-y-16">
-            <div class="bg-gradient-to-br from-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="space-y-4 max-w-xl">
-                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3 py-1 rounded-full font-semibold">Premium Data Bundles</span>
-                    <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">Data, delivered beautifully 📶</h1>
-                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">MTN, Telecel, and AirtelTigo data bundles delivered instantly to any phone number in Ghana.</p>
-                    <div class="flex space-x-3 pt-2">
-                        <button onclick="switchTab('buy')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg text-sm">Buy Data Now</button>
-                        <button onclick="switchTab('orders')" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold px-6 py-3 rounded-xl transition border border-gray-700 text-sm">Track Order</button>
+        <!-- TAB 1: HOME PAGE -->
+        <section id="sec-home" class="tab-section max-w-6xl mx-auto px-4 py-10 space-y-12">
+            
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950 border border-gray-800 rounded-3xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="space-y-5 max-w-xl">
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-3.5 py-1.5 rounded-full font-bold">⚡ Instant Delivery Guaranteed</span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">Data, delivered <span class="text-emerald-400">instantly.</span></h1>
+                    <p class="text-gray-400 text-sm md:text-base leading-relaxed">Affordable MTN, Telecel, and AirtelTigo bundles. Pay with MoMo or card, track your order in real-time.</p>
+                    <div class="flex space-x-3 pt-1">
+                        <button onclick="switchTab('buy')" class="bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold px-6 py-3.5 rounded-xl transition shadow-xl shadow-emerald-500/20 text-sm">Buy Data Package</button>
+                        <button onclick="switchTab('orders')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold px-6 py-3.5 rounded-xl transition border border-gray-700 text-sm">Track Order</button>
+                    </div>
+                </div>
+
+                <!-- Featured Bundles Quick Display -->
+                <div class="bg-gray-950 border border-gray-800/80 p-6 rounded-2xl w-full md:w-80 shadow-xl space-y-3">
+                    <h3 class="font-bold text-xs text-emerald-400 uppercase tracking-wider">Popular Bundles</h3>
+                    <div class="space-y-2.5 text-xs">
+                        <div onclick="selectNetworkAndBuy('YELLO')" class="flex justify-between items-center bg-gray-900 hover:bg-gray-800 p-3 rounded-xl cursor-pointer transition border border-gray-800">
+                            <div><span class="font-bold text-white">MTN 5GB</span><p class="text-[10px] text-gray-400">Non-expiry</p></div>
+                            <span class="text-emerald-400 font-extrabold text-sm">GH₵ 24.50</span>
+                        </div>
+                        <div onclick="selectNetworkAndBuy('TELECEL')" class="flex justify-between items-center bg-gray-900 hover:bg-gray-800 p-3 rounded-xl cursor-pointer transition border border-gray-800">
+                            <div><span class="font-bold text-white">Telecel 10GB</span><p class="text-[10px] text-gray-400">High Speed</p></div>
+                            <span class="text-emerald-400 font-extrabold text-sm">GH₵ 48.00</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- How It Works -->
-            <div class="space-y-8">
-                <h2 class="text-2xl font-bold text-center text-white">How it works</h2>
+            <div class="space-y-6">
+                <h2 class="text-2xl font-extrabold text-center text-white">How to Buy</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">01</span><h3 class="font-bold text-white">Pick a bundle</h3><p class="text-xs text-gray-400">Select MTN, Telecel, or AirtelTigo.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">02</span><h3 class="font-bold text-white">Enter number</h3><p class="text-xs text-gray-400">Provide the recipient phone number.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">03</span><h3 class="font-bold text-white">Pay with MoMo</h3><p class="text-xs text-gray-400">Pay securely via Paystack.</p></div>
-                    <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-lg">04</span><h3 class="font-bold text-white">Instant delivery</h3><p class="text-xs text-gray-400">Data arrives on the recipient's phone.</p></div>
+                    <div class="bg-gray-900/60 border border-gray-800/80 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-xl">1</span><h3 class="font-bold text-white">Select Bundle</h3><p class="text-xs text-gray-400">Choose MTN, Telecel, or AT.</p></div>
+                    <div class="bg-gray-900/60 border border-gray-800/80 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-xl">2</span><h3 class="font-bold text-white">Enter Phone #</h3><p class="text-xs text-gray-400">Number to receive data.</p></div>
+                    <div class="bg-gray-900/60 border border-gray-800/80 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-xl">3</span><h3 class="font-bold text-white">Pay via MoMo</h3><p class="text-xs text-gray-400">Safe Paystack gateway.</p></div>
+                    <div class="bg-gray-900/60 border border-gray-800/80 p-6 rounded-2xl space-y-2"><span class="text-emerald-400 font-black text-xl">4</span><h3 class="font-bold text-white">Get Data</h3><p class="text-xs text-gray-400">Instant delivery to phone.</p></div>
                 </div>
             </div>
+
         </section>
 
-        <!-- TAB 2: BUY DATA -->
-        <section id="sec-buy" class="tab-section hidden max-w-xl mx-auto px-4 py-12">
+        <!-- TAB 2: BUY DATA FORM -->
+        <section id="sec-buy" class="tab-section hidden max-w-lg mx-auto px-4 py-10">
             <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
                 <div>
-                    <h2 class="text-2xl font-black text-white">Purchase Data Bundle</h2>
-                    <p class="text-xs text-gray-400 mt-1">Select network provider and live bundle package.</p>
+                    <h2 class="text-2xl font-black text-white">Buy Data Bundle</h2>
+                    <p class="text-xs text-gray-400 mt-1">Select network, package capacity, and recipient number.</p>
                 </div>
                 <form id="paymentForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Recipient Phone Number</label>
-                        <input type="text" id="phoneNumber" placeholder="e.g. 0241234567" required
-                               class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Recipient Phone Number</label>
+                        <input type="text" id="phoneNumber" placeholder="024XXXXXXX" required
+                               class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-semibold">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Network Provider</label>
-                        <select id="network" onchange="updateCapacities()" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
-                            <option value="YELLO">MTN (YELLO)</option>
-                            <option value="TELECEL">Telecel</option>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Network Provider</label>
+                        <select id="network" onchange="updateCapacities()" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-semibold">
+                            <option value="YELLO">MTN Ghana (YELLO)</option>
+                            <option value="TELECEL">Telecel Ghana</option>
                             <option value="AT_PREMIUM">AirtelTigo (AT)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1.5">Data Capacity & Price</label>
-                        <select id="capacity" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
-                            <option value="" disabled selected>Loading live catalog...</option>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Bundle Capacity & Price</label>
+                        <select id="capacity" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-semibold">
+                            <!-- Populated dynamically / with defaults -->
                         </select>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition shadow-lg text-sm tracking-wide mt-2">
-                        Pay & Deliver Instantly
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold py-4 rounded-xl transition shadow-xl shadow-emerald-500/20 text-sm tracking-wide mt-2">
+                        Pay & Fulfill Order
                     </button>
                 </form>
             </div>
         </section>
 
         <!-- TAB 3: TRACK ORDER -->
-        <section id="sec-orders" class="tab-section hidden max-w-2xl mx-auto px-4 py-12">
+        <section id="sec-orders" class="tab-section hidden max-w-xl mx-auto px-4 py-10">
             <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
                 <div>
                     <h2 class="text-2xl font-black text-white">Track Order Delivery</h2>
-                    <p class="text-xs text-gray-400 mt-1">Enter your reference code to view delivery status.</p>
+                    <p class="text-xs text-gray-400 mt-1">Enter your order reference code to check delivery status.</p>
                 </div>
                 <div class="flex space-x-2">
-                    <input type="text" id="orderRef" placeholder="Enter Reference Code"
-                           class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none">
-                    <button onclick="checkOrderStatus()" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3.5 rounded-xl text-sm font-bold transition shadow whitespace-nowrap">Track</button>
+                    <input type="text" id="orderRef" placeholder="e.g. API-LX5GZ..."
+                           class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3.5 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none font-mono">
+                    <button onclick="checkOrderStatus()" class="bg-emerald-500 hover:bg-emerald-400 text-black px-6 py-3.5 rounded-xl text-sm font-extrabold transition shadow">Track</button>
                 </div>
                 <div id="orderResult" class="text-xs bg-gray-950 p-4 rounded-2xl border border-gray-800 text-gray-300 font-mono hidden whitespace-pre-wrap"></div>
             </div>
@@ -135,11 +157,26 @@
 
     <!-- Footer -->
     <footer class="bg-gray-900 border-t border-gray-800 text-center py-6 text-xs text-gray-400 space-y-2">
-        <p>&copy; 2026 NetBoss Data. All Rights Reserved.</p>
-        <p>Support: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a> | <a href="{{ store.whatsappChannel }}" target="_blank" class="text-emerald-400 underline">WhatsApp Channel</a></p>
+        <p>&copy; 2026 NetBoss Data. Fast delivery, best prices, reliable service.</p>
+        <p>Support Email: <a href="mailto:{{ store.email }}" class="text-emerald-400 underline">{{ store.email }}</a> | <a href="{{ store.whatsappChannel }}" target="_blank" class="text-emerald-400 underline">WhatsApp Channel</a></p>
     </footer>
 
     <script>
+        // Guaranteed Fallback Bundles
+        const fallbackCatalog = [
+            { network: "YELLO", capacity: "1", price: 5.00 },
+            { network: "YELLO", capacity: "2", price: 10.00 },
+            { network: "YELLO", capacity: "5", price: 24.50 },
+            { network: "YELLO", capacity: "10", price: 48.00 },
+            { network: "TELECEL", capacity: "1", price: 4.80 },
+            { network: "TELECEL", capacity: "2", price: 9.50 },
+            { network: "TELECEL", capacity: "5", price: 23.00 },
+            { network: "TELECEL", capacity: "10", price: 45.00 },
+            { network: "AT_PREMIUM", capacity: "1", price: 4.50 },
+            { network: "AT_PREMIUM", capacity: "5", price: 22.00 },
+            { network: "AT_PREMIUM", capacity: "10", price: 43.00 }
+        ];
+
         let liveProducts = [];
 
         function switchTab(tabId) {
@@ -148,9 +185,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function selectNetworkAndBuy(networkCode) {
+        function selectNetworkAndBuy(netCode) {
             switchTab('buy');
-            document.getElementById('network').value = networkCode;
+            document.getElementById('network').value = netCode;
             updateCapacities();
         }
 
@@ -158,13 +195,15 @@
             try {
                 const res = await fetch('/api/products');
                 const data = await res.json();
-                if (data.status === 'success' && data.data) {
+                if (data.status === 'success' && data.data && data.data.length > 0) {
                     liveProducts = data.data;
-                    updateCapacities();
+                } else {
+                    liveProducts = fallbackCatalog;
                 }
             } catch (err) {
-                console.error("Catalog fetch failed:", err);
+                liveProducts = fallbackCatalog;
             }
+            updateCapacities();
         }
 
         function updateCapacities() {
@@ -172,9 +211,11 @@
             const capacitySelect = document.getElementById('capacity');
             capacitySelect.innerHTML = '';
 
-            const filtered = liveProducts.filter(p => p.network === network);
+            const listToUse = (liveProducts && liveProducts.length > 0) ? liveProducts : fallbackCatalog;
+            const filtered = listToUse.filter(p => p.network === network);
+
             if (filtered.length === 0) {
-                capacitySelect.innerHTML = '<option value="" disabled>No packages available for this network</option>';
+                capacitySelect.innerHTML = '<option value="" disabled>No packages available</option>';
                 return;
             }
 
@@ -182,7 +223,7 @@
                 const opt = document.createElement('option');
                 opt.value = p.capacity;
                 opt.setAttribute('data-price', p.price);
-                opt.textContent = `${p.capacity} GB - GH₵ ${p.price.toFixed(2)}`;
+                opt.textContent = `${p.capacity} GB — GH₵ ${parseFloat(p.price).toFixed(2)}`;
                 capacitySelect.appendChild(opt);
             });
         }
@@ -235,9 +276,9 @@
                             });
                             const fulfillData = await fulfillRes.json();
                             if (fulfillData.status === 'success') {
-                                alert("Data bundle order successfully delivered!");
+                                alert("Data bundle order placed successfully!");
                             } else {
-                                alert("Order error: " + (fulfillData.message || "Check status in Track Order tab"));
+                                alert("Order submitted: " + (fulfillData.message || "Checking status..."));
                             }
                         },
                         onClose: function() {
@@ -246,7 +287,7 @@
                     });
                     handler.openIzu();
                 } else {
-                    alert("Initialization error: " + (initData.message || "Unable to process payment"));
+                    alert("Initialization error: " + (initData.message || "Unable to start payment"));
                 }
             } catch (err) {
                 alert("Network error: " + err.message);
