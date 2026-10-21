@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#061326">
+<title>Netboss — Data Bundles Made Easy</title>
+<!-- Paystack Inline JS Library -->
+<script src="https://js.paystack.co/v2/inline.js"></script>
+<style>
+:root {
+  --bg:#061326;
+  --panel:#091b32;
+  --card:#0b2039;
+  --line:#173b5d;
+  --green:#25edab;
+  --muted:#a7bdd5;
+  --white:#f4f8ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(ellipse at 70% 0%,#0a2940 0%,var(--bg) 48%);
+  color:var(--white);font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+button:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+header{
+  min-height:76px;padding:17px max(22px,calc((100% - 1380px)/2));
+  display:flex;align-items:center;justify-content:space-between;gap:18px;
+  border-bottom:1px solid var(--line);background:#061326eF;
+}
+.brand{font-size:27px;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.brand span{color:var(--green)}
+.tagline{color:#c3d4e9;font-size:14px}
+.support{text-align:right;font-size:13px;color:var(--muted)}
+.support strong{display:block;color:var(--white);margin-top:4px}
+main{max-width:1380px;margin:auto;padding:24px 22px 35px}
+.hero{
+  position:relative;overflow:hidden;min-height:170px;padding:32px;
+  border:1px solid #126254;border-radius:20px;
+  background:linear-gradient(110deg,#063e3b,#08243b 55%,#06413c);
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.hero h1{font-size:clamp(27px,4vw,42px);line-height:1.12;margin:0 0 12px}
+.hero h1 span{color:var(--green)}
+.hero p{margin:0;color:#d0e3f4;line-height:1.6}
+.hero-icon{font-size:68px;color:var(--green);padding:0 25px}
+.benefits{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.benefit{
+  border:1px solid #245064;background:#092638;color:#d7e8f8;
+  padding:7px 11px;border-radius:999px;font-size:12px
+}
+.layout{
+  display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.95fr);
+  gap:18px;margin-top:18px;align-items:start
+}
+.panel{
+  background:linear-gradient(145deg,#091c33,#07182b);
+  border:1px solid var(--line);border-radius:17px;overflow:hidden;
+}
+.section{padding:22px;border-bottom:1px solid var(--line)}
+.section:last-child{border-bottom:0}
+.heading{display:flex;align-items:center;gap:11px;margin:0 0 17px;font-size:18px}
+.number{
+  display:inline-grid;place-items:center;flex:0 0 32px;height:32px;
+  border-radius:50%;background:var(--green);color:#06221d;font-weight:900
+}
+.networks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.network{
+  min-height:60px;border:1px solid var(--line);border-radius:12px;
+  color:var(--white);background:#0a2038;font-weight:700
+}
+.network:hover,.package:hover:not(:disabled){transform:translateY(-2px);border-color:var(--green)}
+.network.active{border-color:var(--green);background:#0c3937;box-shadow:inset 0 0 0 1px #25edab45}
+.network[data-network="TELECEL"].active{border-color:#ff3157;background:#351528}
+.network[data-network="AT_PREMIUM"].active{border-color:#258dff;background:#0a294b}
+.network .symbol{display:block;font-size:16px;margin-bottom:4px}
+.statusline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 13px}
+.statusline h2{font-size:18px;margin:0}
+.live{font-size:12px;color:var(--green);background:#06372f;padding:8px 10px;border-radius:999px;white-space:nowrap}
+.packages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.package{
+  min-height:106px;text-align:left;padding:14px 12px;
+  border:1px solid var(--line);border-radius:13px;background:#0a1e35;color:var(--white)
+}
+.package.selected{border:2px solid var(--green);background:#0b3435}
+.capacity{display:block;font-size:20px;font-weight:800;margin-bottom:9px}
+.price{display:block;font-weight:800;color:var(--green);font-size:15px}
+.stock{display:block;font-size:11px;color:#8feac9;margin-top:8px}
+.package:disabled .stock{color:#ffb6c3}
+.side{padding:22px;position:sticky;top:15px}
+.side .heading{margin-bottom:20px}
+.field-label{display:block;color:#c7d8eb;font-size:14px;margin-bottom:9px}
+input{
+  width:100%;padding:14px;border-radius:11px;border:1px solid #235078;
+  color:white;background:#061629;margin-bottom:12px
+}
+input::placeholder{color:#7892b0}
+.summary{
+  margin-top:10px;padding:16px;border:1px solid #167b68;
+  background:#071f2b;border-radius:13px
+}
+.summary-title{color:var(--green);font-size:16px;font-weight:800;margin-bottom:15px}
+.summary-row{display:flex;justify-content:space-between;gap:15px;margin:12px 0;font-size:14px;color:#c7d8eb}
+.summary-row strong{text-align:right;color:white}
+.rule{border:0;border-top:1px solid var(--line);margin:14px 0}
+.notice{
+  margin-top:18px;padding:13px;border:1px solid #167b68;border-radius:11px;
+  background:#072428;color:#9affdf;font-size:12px;line-height:1.6
+}
+.primary,.secondary{
+  width:100%;padding:15px;border-radius:11px;font-weight:800
+}
+.primary{margin-top:14px;background:linear-gradient(100deg,#25edab,#16cba1);color:#03251e}
+.primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.secondary{margin-top:9px;border:1px solid #356188;background:transparent;color:#d8e8f8}
+.muted{font-size:13px;color:var(--muted);line-height:1.55}
+footer{
+  border-top:1px solid var(--line);padding:22px;text-align:center;
+  color:#a7bdd5;font-size:13px
+}
+footer strong{color:var(--green)}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .side{position:static}
+  .packages{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  header{padding:16px;align-items:flex-start}
+  .brand{font-size:22px}
+  .tagline{display:none}
+  .support{font-size:11px}
+  main{padding:15px 12px 25px}
+  .hero{padding:23px 19px;min-height:155px}
+  .hero-icon{font-size:40px;padding:0}
+  .section,.side{padding:16px}
+  .packages{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .package{min-height:100px;padding:13px 11px}
+  .capacity{font-size:20px}
+  .networks{gap:7px}
+  .network{font-size:13px;min-height:56px}
+  .statusline{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span>◆</span> NETBOSS</div>
+  <div class="tagline">Fast &nbsp; • &nbsp; Reliable &nbsp; • &nbsp; Affordable</div>
+  <div class="support">Support Line<strong>0593293013</strong></div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>Buy Data Bundles<br><span>Stay Connected.</span></h1>
+      <p>Choose your network, pick your bundle, and get instant automated delivery.</p>
+      <div class="benefits">
+        <span class="benefit">✓ Live supplier prices</span>
+        <span class="benefit">✓ Automated secure payment</span>
+        <span class="benefit">✓ Instant data delivery</span>
+      </div>
+    </div>
+    <div class="hero-icon" aria-hidden="true">▥</div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="section">
+        <h2 class="heading"><span class="number">1</span>Select Your Network</h2>
+        <div class="networks">
+          <button class="network active" data-network="YELLO">
+            <span class="symbol">🟡</span>MTN
+          </button>
+          <button class="network" data-network="TELECEL">
+            <span class="symbol">🔴</span>Telecel
+          </button>
+          <button class="network" data-network="AT_PREMIUM">
+            <span class="symbol">🔵</span>AT
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="statusline">
+          <h2 class="heading" style="margin:0"><span class="number">2</span>Choose Your Bundle</h2>
+          <span class="live">⚡ Live DataMart prices</span>
+        </div>
+        <p id="status" class="muted" aria-live="polite">Loading packages…</p>
+        <div id="packages" class="packages"></div>
+        <button id="retry" class="secondary" hidden>Try again</button>
+        <p class="muted">Select your package to proceed with automated online checkout.</p>
+      </div>
+    </section>
+
+    <aside class="panel side">
+      <h2 class="heading"><span class="number">3</span>Enter Your Details</h2>
+      <label class="field-label" for="phone">Ghana Phone Number (Recipient)</label>
+      <input id="phone" type="tel" placeholder="e.g. 0241234567" autocomplete="tel">
+
+      <label class="field-label" for="email">Email Address (for receipt)</label>
+      <input id="email" type="email" placeholder="e.g. customer@email.com" autocomplete="email">
+
+      <div class="summary">
+        <div class="summary-title">▣ &nbsp; Order Summary</div>
+        <div class="summary-row"><span>Network</span><strong id="sumNetwork">MTN</strong></div>
+        <div class="summary-row"><span>Package</span><strong id="sumCapacity">Not selected</strong></div>
+        <div class="summary-row"><span>Price</span><strong id="sumPrice">—</strong></div>
+        <hr class="rule">
+        <p class="muted" id="summaryMessage">Select an available package to begin your order.</p>
+      </div>
+
+      <div class="notice">
+        🚀 <strong>Fully Automated:</strong> Once your payment is successfully verified, your data bundle is instantly triggered and sent to the recipient phone number.
+      </div>
+
+      <p id="orderStatus" class="muted" aria-live="polite"></p>
+      
+      <!-- Automated Paystack Checkout Button -->
+      <button id="payOnline" class="primary" disabled>💳 &nbsp; Pay Online & Deliver Data</button>
+      <button id="clear" class="secondary">Clear Selection</button>
+    </aside>
+  </div>
+</main>
+
+<footer><strong>◆ NETBOSS</strong> &nbsp; Data Bundles Made Easy<br><br>Support: 0593293013 &nbsp; • &nbsp; Your connection starts here.</footer>
+
+<script>
+"use strict";
+
+const NETWORKS = {
+  YELLO: "MTN",
+  TELECEL: "Telecel",
+  AT_PREMIUM: "AT"
+};
+
+const packagesElement = document.getElementById("packages");
+const statusElement = document.getElementById("status");
+const payOnlineButton = document.getElementById("payOnline");
+const retryButton = document.getElementById("retry");
+const phoneElement = document.getElementById("phone");
+const emailElement = document.getElementById("email");
+const orderStatus = document.getElementById("orderStatus");
+
+let currentNetwork = "YELLO";
+let currentPackages = [];
+let selectedPackage = null;
+let requestNumber = 0;
+
+function money(value) {
+  return "GH₵ " + value.toLocaleString("en-GH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function capacity(item) {
+  const mb = Number(item.mb);
+  const sizeNum = Number(item.capacity);
+  
+  if (Number.isFinite(mb) && mb > 0) {
+    if (mb >= 1024) {
+      return (mb / 1024) + "GB";
+    }
+    return mb + "MB";
+  }
+  
+  return Number.isFinite(sizeNum) && sizeNum > 0 ? sizeNum + "GB" : null;
+}
+
+function price(item) {
+  const amount = Number(item.sellingPrice !== undefined ? item.sellingPrice : (item.price !== undefined ? item.price : item.basePrice));
+  return Number.isFinite(amount) && amount >= 0 ? amount : null;
+}
+
+function available(item) {
+  return item.inStock === true || item.inStock === "true";
+}
+
+function updateSummary() {
+  document.getElementById("sumNetwork").textContent = NETWORKS[currentNetwork];
+  document.getElementById("sumCapacity").textContent =
+    selectedPackage ? capacity(selectedPackage) : "Not selected";
+  document.getElementById("sumPrice").textContent =
+    selectedPackage ? money(price(selectedPackage)) : "—";
+  document.getElementById("summaryMessage").textContent =
+    selectedPackage
+      ? "Package selected. Proceed to automated checkout."
+      : "Select an available package to begin your order.";
+  payOnlineButton.disabled = selectedPackage === null;
+}
+
+function renderPackages() {
+  packagesElement.replaceChildren();
+  selectedPackage = null;
+  updateSummary();
+  let count = 0;
+
+  currentPackages.forEach(item => {
+    const size = capacity(item);
+    const amount = price(item);
+    if (!size || amount === null) return;
+    count++;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "package";
+    button.disabled = !available(item);
+
+    const title = document.createElement("strong");
+    title.className = "capacity";
+    title.textContent = size;
+
+    const cost = document.createElement("span");
+    cost.className = "price";
+    cost.textContent = money(amount);
+
+    const stock = document.createElement("span");
+    stock.className = "stock";
+    stock.textContent = available(item) ? "✓ Available" : "Out of stock";
+
+    button.append(title, cost, stock);
+    button.addEventListener("click", () => {
+      selectedPackage = item;
+      packagesElement.querySelectorAll(".package").forEach(card =>
+        card.classList.remove("selected")
+      );
+      button.classList.add("selected");
+      orderStatus.textContent = "";
+      updateSummary();
+    });
+    packagesElement.appendChild(button);
+  });
+
+  statusElement.textContent = count
+    ? count + " bundles loaded for " + NETWORKS[currentNetwork] + "."
+    : "No recognised packages were returned for this network.";
+}
+
+async function loadPackages() {
+  const request = ++requestNumber;
+  packagesElement.replaceChildren();
+  currentPackages = [];
+  selectedPackage = null;
+  updateSummary();
+  retryButton.hidden = true;
+  statusElement.textContent = "Loading live packages…";
+  orderStatus.textContent = "";
+
+  try {
+    const response = await fetch(
+      "/api/packages?network=" + encodeURIComponent(currentNetwork),
+      { cache: "no-store" }
+    );
+    const result = await response.json();
+    if (request !== requestNumber) return;
+
+    if (!response.ok || result.status === "error") {
+      throw new Error(result.message || "Unable to load packages.");
+    }
+    
+    // Support both direct array and wrapped data objects from DataMart
+    const pkgList = Array.isArray(result) ? result : (result.data || result.products || []);
+
+    currentPackages = pkgList.filter(item =>
+      item && item.network === currentNetwork
+    );
+    renderPackages();
+  } catch (error) {
+    if (request !== requestNumber) return;
+    console.error("Package loading error:", error);
+    statusElement.textContent =
+      "Packages could not load. Check your server and try again.";
+    retryButton.hidden = false;
+  }
+}
+
+document.querySelectorAll(".network").forEach(button => {
+  button.addEventListener("click", () => {
+    currentNetwork = button.dataset.network;
+    document.querySelectorAll(".network").forEach(other =>
+      other.classList.toggle("active", other === button)
+    );
+    loadPackages();
+  });
+});
+
+retryButton.addEventListener("click", loadPackages);
+
+document.getElementById("clear").addEventListener("click", () => {
+  selectedPackage = null;
+  phoneElement.value = "";
+  emailElement.value = "";
+  orderStatus.textContent = "";
+  packagesElement.querySelectorAll(".package").forEach(card =>
+    card.classList.remove("selected")
+  );
+  updateSummary();
+});
+
+function validatePhone() {
+  const phone = phoneElement.value.replace(/[\s-]/g, "");
+  if (!/^(?:0\d{9}|\+?233\d{9})$/.test(phone)) {
+    orderStatus.textContent = "Enter a valid Ghana phone number, e.g. 0241234567.";
+    phoneElement.focus();
+    return null;
+  }
+  return phone;
+}
+
+// Automated Paystack Online Checkout Flow
+payOnlineButton.addEventListener("click", async () => {
+  if (!selectedPackage || !available(selectedPackage)) {
+    orderStatus.textContent = "Please select an available package.";
+    return;
+  }
+
+  const phone = validatePhone();
+  if (!phone) return;
+
+  const email = emailElement.value.trim() || "customer@netboss.gh";
+  const amountInPesewas = Math.round(price(selectedPackage) * 100);
+
+  orderStatus.textContent = "Initializing secure checkout...";
+  payOnlineButton.disabled = true;
+
+  try {
+    const res = await fetch("/api/initialize-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        amount: amountInPesewas,
+        phoneNumber: phone,
+        network: currentNetwork,
+        capacity: selectedPackage.capacity
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.status || !data.data || !data.data.access_code) {
+      throw new Error(data.message || "Failed to initialize payment transaction.");
+    }
+
+    const accessCode = data.data.access_code;
+
+    // Launch Paystack Inline Popup V2
+    const popup = new PaystackPop();
+    popup.checkout({
+      accessCode: accessCode,
+      onSuccess: async function(transaction) {
+        orderStatus.textContent = "Payment successful! Verifying and sending data bundle automatically...";
+        
+        try {
+          const fulfillRes = await fetch("/api/fulfill-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              reference: transaction.reference,
+              phoneNumber: phone,
+              network: currentNetwork,
+              capacity: selectedPackage.capacity
+            })
+          });
+
+          const fulfillData = await fulfillRes.json();
+          if (fulfillRes.ok) {
+            orderStatus.textContent = "✅ Payment confirmed & data bundle delivered automatically!";
+          } else {
+            orderStatus.textContent = "⚠️ Payment successful, but fulfillment failed: " + (fulfillData.message || "Contact support.");
+          }
+        } catch (err) {
+          orderStatus.textContent = "⚠️ Payment successful, but fulfillment error occurred. Reference: " + transaction.reference;
+        }
+        payOnlineButton.disabled = false;
+      },
+      onClose: function() {
+        orderStatus.textContent = "Payment cancelled.";
+        payOnlineButton.disabled = false;
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    orderStatus.textContent = err.message || "An error occurred during checkout.";
+    payOnlineButton.disabled = false;
+  }
+});
+
+loadPackages();
+</script>
+</body>
+</html>
